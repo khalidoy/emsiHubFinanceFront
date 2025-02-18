@@ -92,15 +92,11 @@ function CustomNavbar() {
               {/* <NavDropdown.Item as={Link} to="/reports/normal-payments">
                 {t("normal_payments")}
               </NavDropdown.Item> */}
-              <NavDropdown.Item as={Link} to="/reports/credit-report">
-                {t("credit_report")}
-              </NavDropdown.Item>
+
               <NavDropdown.Item as={Link} to="/reports/daily-acc-report">
                 {t("daily_accounting_report")}
               </NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/transport-report">
-                {t("transport_report")}
-              </NavDropdown.Item>
+              {/* Transport report removed */}
               <NavDropdown.Item as={Link} to="/payments-report">
                 {t("payments_report")}
               </NavDropdown.Item>

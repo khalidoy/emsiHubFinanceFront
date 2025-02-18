@@ -115,6 +115,10 @@ function Home() {
         _id: student._id && student._id.$oid ? student._id.$oid : student._id,
         isNew: student.isNew || false,
         isLeft: student.isLeft || false,
+        payments: student.payments || {
+          real_payments: { insurance_real: 0 },
+          agreed_payments: {},
+        },
       }));
 
       setStudents(processedData);
@@ -278,17 +282,15 @@ function Home() {
           const realChangedPayments = [];
           const agreedChangedPayments = {};
 
-          // Detect changes in real payments
+          // Detect changes in real payments, ignoring transport-related fields
           for (let key in selectedStudent.payments.real_payments) {
+            if (key.includes("transport")) continue;
             if (
               selectedStudent.payments.real_payments[key] !==
               originalStudentData.payments.real_payments[key]
             ) {
-              const payment_type = key.includes("transport_real")
-                ? "transport"
-                : key === "insurance_real"
-                ? "insurance"
-                : "monthly";
+              const payment_type =
+                key === "insurance_real" ? "insurance" : "monthly";
               const paymentObj = {
                 student_id: selectedStudent._id,
                 user_id: currentUserId,
@@ -304,8 +306,9 @@ function Home() {
             }
           }
 
-          // Detect changes in agreed payments
+          // Detect changes in agreed payments, ignoring transport-related fields
           for (let key in selectedStudent.payments.agreed_payments) {
+            if (key.includes("transport")) continue;
             if (
               selectedStudent.payments.agreed_payments[key] !==
               originalStudentData.payments.agreed_payments[key]
@@ -388,18 +391,6 @@ function Home() {
         m4_agreed: "0",
         m5_agreed: "0",
         m6_agreed: "0",
-
-        m9_transport_agreed: "0",
-        m10_transport_agreed: "0",
-        m11_transport_agreed: "0",
-        m12_transport_agreed: "0",
-        m1_transport_agreed: "0",
-        m2_transport_agreed: "0",
-        m3_transport_agreed: "0",
-        m4_transport_agreed: "0",
-        m5_transport_agreed: "0",
-        m6_transport_agreed: "0",
-
         insurance_agreed: "0",
       },
       real_payments: {
@@ -413,18 +404,6 @@ function Home() {
         m4_real: 0,
         m5_real: 0,
         m6_real: 0,
-
-        m9_transport_real: 0,
-        m10_transport_real: 0,
-        m11_transport_real: 0,
-        m12_transport_real: 0,
-        m1_transport_real: 0,
-        m2_transport_real: 0,
-        m3_transport_real: 0,
-        m4_transport_real: 0,
-        m5_transport_real: 0,
-        m6_transport_real: 0,
-
         insurance_real: 0,
       },
     };
@@ -526,22 +505,7 @@ function Home() {
         };
 
         await api.post("/payments/create_or_update", paymentObj);
-      } else if (key.endsWith("transport_real")) {
-        // Transport payment
-        const payment_type = "transport";
-        const monthKey = key.split("_")[0]; // e.g., 'm9'
-        const monthNum = parseInt(monthKey.substring(1)); // e.g., 9
-
-        const paymentObj = {
-          student_id: studentId,
-          user_id: currentUserId,
-          amount: Number(value) || 0,
-          payment_type: payment_type,
-          month: monthNum,
-        };
-
-        await api.post("/payments/create_or_update", paymentObj);
-      } else if (key.endsWith("real")) {
+      } else if (key.endsWith("real") && !key.includes("transport")) {
         // Monthly payment
         const payment_type = "monthly";
         const monthKey = key.split("_")[0]; // e.g., 'm9'

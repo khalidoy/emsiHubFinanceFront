@@ -1,4 +1,4 @@
-// App.jsx
+// src/App.jsx
 
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -10,7 +10,6 @@ import DailyAccounting from "./pages/DailyAccounting";
 import NormalPayments from "./pages/NormalPayments"; // Import the new NormalPayments component
 import CreditReport from "./pages/CreditReports"; // Import the new CreditReport component
 import DailyAccReport from "./pages/DailyAccReport"; // Import the new DailyAccReport component
-import TransportReport from "./pages/TransportReport"; // Import the TransportReport component
 import PaymentsReport from "./pages/PaymentsReport"; // Import the PaymentsReport component
 
 function App() {
@@ -29,10 +28,7 @@ function App() {
             path="/reports/daily-acc-report"
             element={<DailyAccReport />}
           />
-          <Route path="/transport-report" element={<TransportReport />} />{" "}
-          {/* Add the TransportReport route */}
-          <Route path="/payments-report" element={<PaymentsReport />} />{" "}
-          {/* Add the PaymentsReport route */}
+          <Route path="/payments-report" element={<PaymentsReport />} />
         </Routes>
       </div>
     </Router>

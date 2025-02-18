@@ -32,6 +32,9 @@ const StudentModal = ({
   };
 
   const handleRealPaymentChange = (key, value) => {
+    // Remove transport-related updates
+    if (key.includes("transport")) return;
+
     const agreedKey = key.replace("_real", "_agreed");
     const agreedValue = Number(
       student.payments.agreed_payments?.[agreedKey] || 0
@@ -54,12 +57,9 @@ const StudentModal = ({
   };
 
   const handleAgreedPaymentChange = (key, value) => {
-    const isTransport = key.includes("_transport_agreed");
-    const paymentCategory = isTransport
-      ? "transport_agreed"
-      : key === "insurance_agreed"
-      ? "insurance_agreed"
-      : "monthly_agreed";
+    // Remove transport-related updates
+    if (key.includes("transport")) return;
+
     const newValue = value === "" ? "0" : value;
 
     setStudent((prev) => {
@@ -70,16 +70,11 @@ const StudentModal = ({
 
       if (autocompleteEnabled) {
         const keysToUpdate = Object.keys(updatedAgreedPayments).filter((k) => {
-          if (paymentCategory === "monthly_agreed") {
-            return (
-              k.endsWith("_agreed") &&
-              !k.includes("transport") &&
-              !k.includes("insurance")
-            );
-          } else if (paymentCategory === "transport_agreed") {
-            return k.endsWith("_transport_agreed") && k !== key;
-          }
-          return false;
+          return (
+            k.endsWith("_agreed") &&
+            !k.includes("transport") &&
+            !k.includes("insurance")
+          );
         });
 
         keysToUpdate.forEach((k) => {
@@ -154,8 +149,6 @@ const StudentModal = ({
               const hasPreviousPayments = previousMonths.some((m) => {
                 const realKey = `${m.key}_real`;
                 const agreedKey = `${m.key}_agreed`;
-                const transportRealKey = `${m.key}_transport_real`;
-                const transportAgreedKey = `${m.key}_transport_agreed`;
                 const insuranceReal =
                   student.payments.real_payments.insurance_real;
                 const insuranceAgreed =
@@ -165,12 +158,6 @@ const StudentModal = ({
                   Number(student.payments.real_payments[realKey] || 0) > 0 ||
                   Number(student.payments.agreed_payments[agreedKey] || 0) >
                     0 ||
-                  Number(
-                    student.payments.real_payments[transportRealKey] || 0
-                  ) > 0 ||
-                  Number(
-                    student.payments.agreed_payments[transportAgreedKey] || 0
-                  ) > 0 ||
                   Number(insuranceReal || 0) > 0 ||
                   Number(insuranceAgreed || 0) > 0
                 );
@@ -184,7 +171,7 @@ const StudentModal = ({
                 return;
               }
 
-              // Reset previous months' payments
+              // Reset previous months' payments (transport keys removed)
               const updatedRealPayments = { ...student.payments.real_payments };
               const updatedAgreedPayments = {
                 ...student.payments.agreed_payments,
@@ -192,9 +179,7 @@ const StudentModal = ({
 
               previousMonths.forEach((m) => {
                 updatedRealPayments[`${m.key}_real`] = 0;
-                updatedRealPayments[`${m.key}_transport_real`] = 0;
                 updatedAgreedPayments[`${m.key}_agreed`] = "0";
-                updatedAgreedPayments[`${m.key}_transport_agreed`] = "0";
               });
 
               setStudent((prev) => ({
@@ -330,7 +315,7 @@ const StudentModal = ({
                 </tr>
               </thead>
               <tbody>
-                {["monthly", "transport"].map((paymentType) => (
+                {["monthly"].map((paymentType) => (
                   <tr key={paymentType}>
                     <td>{`${
                       paymentType.charAt(0).toUpperCase() + paymentType.slice(1)
@@ -342,14 +327,9 @@ const StudentModal = ({
                       const joinedOrder = joinedMonth
                         ? joinedMonth.order
                         : null;
-
                       const isDisabled =
                         joinedOrder && month.order < joinedOrder;
-
-                      const key =
-                        paymentType === "monthly"
-                          ? `${month.key}_agreed`
-                          : `${month.key}_transport_agreed`;
+                      const key = `${month.key}_agreed`;
 
                       return (
                         <td
@@ -414,7 +394,7 @@ const StudentModal = ({
                 </tr>
               </thead>
               <tbody>
-                {["monthly", "transport"].map((paymentType) => (
+                {["monthly"].map((paymentType) => (
                   <tr key={paymentType}>
                     <td>{`${
                       paymentType.charAt(0).toUpperCase() + paymentType.slice(1)
@@ -426,14 +406,9 @@ const StudentModal = ({
                       const joinedOrder = joinedMonth
                         ? joinedMonth.order
                         : null;
-
                       const isDisabled =
                         joinedOrder && month.order < joinedOrder;
-
-                      const key =
-                        paymentType === "monthly"
-                          ? `${month.key}_real`
-                          : `${month.key}_transport_real`;
+                      const key = `${month.key}_real`;
 
                       return (
                         <td

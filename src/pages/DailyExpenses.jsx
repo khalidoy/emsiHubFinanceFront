@@ -30,14 +30,15 @@ function DailyExpenses() {
   useEffect(() => {
     fetchExpenses();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Runs only once when the component mounts
+  }, []); // Runs once when the component mounts
 
   const fetchExpenses = async () => {
     setLoadingExpenses(true);
     try {
       const response = await axios.get(`${API_BASE_URL}/depences/`);
-      const allExpenses = JSON.parse(response.data.data) || [];
-
+      console.log("Fetched expenses:", response.data);
+      // Read the expenses array from response.data.data
+      const allExpenses = response.data.data || [];
       // Map each expense to include 'id' from '_id.$oid'
       const expensesWithId = allExpenses
         .map((expense) => ({
@@ -120,8 +121,6 @@ function DailyExpenses() {
           expenseData
         );
         const updatedExpenseRaw = updateResponse.data.data;
-
-        // Check if 'data' is a string and parse it
         let updatedExpense;
         if (typeof updatedExpenseRaw === "string") {
           updatedExpense = JSON.parse(updatedExpenseRaw);
@@ -149,8 +148,6 @@ function DailyExpenses() {
           expenseData
         );
         const newExpenseRaw = createResponse.data.data;
-
-        // Parse the 'data' field if it's a string
         let newExpense;
         if (typeof newExpenseRaw === "string") {
           newExpense = JSON.parse(newExpenseRaw);
@@ -180,7 +177,7 @@ function DailyExpenses() {
     }
   };
 
-  // **Compute Total Amount of Expenses Today**
+  // Compute Total Amount of Expenses Today
   const totalAmount = expenses.reduce(
     (sum, expense) => sum + expense.amount,
     0
@@ -213,7 +210,6 @@ function DailyExpenses() {
         </Button>
       </div>
 
-      {/* **Total Amount Display in DH** */}
       <Alert variant="info" className="text-right">
         {t("total_expenses_today")} :{" "}
         <strong>{totalAmount.toFixed(2)} DH</strong>
@@ -247,20 +243,23 @@ function DailyExpenses() {
                 <td className="text-center">
                   <Button
                     variant="info"
-                    size="sm" // Increased button size
+                    size="sm"
                     className="mr-2"
                     onClick={() => handleEditExpense(expense)}
-                    style={{ padding: "0.5rem 0.75rem", marginRight: 5 }} // Adjust padding if necessary
+                    style={{
+                      padding: "0.5rem 0.75rem",
+                      marginRight: 5,
+                    }}
                   >
-                    <FaEdit size={20} /> {/* Increased icon size */}
+                    <FaEdit size={20} />
                   </Button>
                   <Button
                     variant="danger"
-                    size="sm" // Increased button size
+                    size="sm"
                     onClick={() => handleDeleteExpense(expense.id)}
-                    style={{ padding: "0.5rem 0.75rem" }} // Adjust padding if necessary
+                    style={{ padding: "0.5rem 0.75rem" }}
                   >
-                    <FaTrash size={20} /> {/* Increased icon size */}
+                    <FaTrash size={20} />
                   </Button>
                 </td>
               </tr>
@@ -269,7 +268,6 @@ function DailyExpenses() {
         </Table>
       )}
 
-      {/* Add/Edit Expense Modal */}
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>

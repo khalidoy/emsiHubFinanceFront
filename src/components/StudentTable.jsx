@@ -100,221 +100,135 @@ const StudentTable = ({
             <tbody>
               {filteredStudents.length === 0 ? (
                 <tr>
-                  <td colSpan={12} className="text-center">
+                  <td colSpan={months.length + 2} className="text-center">
                     {t("no_students_found")}
                   </td>
                 </tr>
               ) : (
                 filteredStudents.map((student) => {
-                  const hasTransport = Object.keys(
-                    student.payments.agreed_payments
-                  ).some(
-                    (key) =>
-                      key.includes("transport_agreed") &&
-                      Number(student.payments.agreed_payments[key]) > 0
-                  );
-
-                  const rowSpan = hasTransport ? 2 : 1;
-
+                  // Removed transport-related logic; rowSpan is always 1
+                  const rowSpan = 1;
                   return (
-                    <React.Fragment key={student._id}>
-                      <tr className="clickable-row">
-                        <td
-                          rowSpan={rowSpan}
-                          onClick={() => handleRowClick(student)}
-                          style={{ cursor: "pointer" }}
-                        >
-                          {student.name}
-                        </td>
-
-                        <td
-                          rowSpan={rowSpan}
-                          className={getCellClass(
-                            student.payments.real_payments.insurance_real,
-                            student.payments.agreed_payments.insurance_agreed
-                          )}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleCellClick(
-                              student._id,
-                              "insurance_real",
-                              student.payments.real_payments.insurance_real
-                            );
-                          }}
-                        >
-                          {editingCell.studentId === student._id &&
-                          editingCell.key === "insurance_real" ? (
-                            isSaving ? (
-                              <Spinner
-                                animation="border"
-                                size="sm"
-                                role="status"
-                                aria-hidden="true"
-                              />
-                            ) : (
-                              <Form.Control
-                                type="number"
-                                min="0"
-                                value={tempValue}
-                                autoFocus
-                                onChange={(e) => setTempValue(e.target.value)}
-                                onKeyDown={handleKeyDown}
-                                onBlur={handleBlur}
-                              />
-                            )
-                          ) : (
-                            displayValue(
-                              student.payments.real_payments.insurance_real
-                            )
-                          )}
-                        </td>
-
-                        {months.map((month) => {
-                          const joinedMonth = months.find(
-                            (m) => m.monthNum === student.joined_month
+                    <tr key={student._id} className="clickable-row">
+                      <td
+                        rowSpan={rowSpan}
+                        onClick={() => handleRowClick(student)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        {student.name}
+                      </td>
+                      <td
+                        rowSpan={rowSpan}
+                        className={getCellClass(
+                          student.payments.real_payments.insurance_real,
+                          student.payments.agreed_payments.insurance_agreed
+                        )}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleCellClick(
+                            student._id,
+                            "insurance_real",
+                            student.payments.real_payments.insurance_real
                           );
-                          const joinedOrder = joinedMonth
-                            ? joinedMonth.order
-                            : null;
+                        }}
+                      >
+                        {editingCell.studentId === student._id &&
+                        editingCell.key === "insurance_real" ? (
+                          isSaving ? (
+                            <Spinner
+                              animation="border"
+                              size="sm"
+                              role="status"
+                              aria-hidden="true"
+                            />
+                          ) : (
+                            <Form.Control
+                              type="number"
+                              min="0"
+                              value={tempValue}
+                              autoFocus
+                              onChange={(e) => setTempValue(e.target.value)}
+                              onKeyDown={handleKeyDown}
+                              onBlur={handleBlur}
+                            />
+                          )
+                        ) : (
+                          displayValue(
+                            student.payments.real_payments.insurance_real
+                          )
+                        )}
+                      </td>
+                      {months.map((month) => {
+                        const joinedMonth = months.find(
+                          (m) => m.monthNum === student.joined_month
+                        );
+                        const joinedOrder = joinedMonth
+                          ? joinedMonth.order
+                          : null;
 
-                          const isDisabled =
-                            joinedOrder && month.order < joinedOrder;
+                        const isDisabled =
+                          joinedOrder && month.order < joinedOrder;
 
-                          const key = `${month.key}_real`;
+                        const key = `${month.key}_real`;
 
-                          return (
-                            <td
-                              key={month.key}
-                              className={
-                                isDisabled
-                                  ? "disabled-cell"
-                                  : getCellClass(
-                                      student.payments.real_payments[key],
-                                      student.payments.agreed_payments[
-                                        `${month.key}_agreed`
-                                      ]
-                                    )
-                              }
-                              onClick={(e) => {
-                                if (isDisabled) return;
-                                e.stopPropagation();
-                                handleCellClick(
-                                  student._id,
-                                  key,
-                                  student.payments.real_payments[key]
-                                );
-                              }}
-                            >
-                              {!isDisabled ? (
-                                editingCell.studentId === student._id &&
-                                editingCell.key === key ? (
-                                  isSaving ? (
-                                    <Spinner
-                                      animation="border"
-                                      size="sm"
-                                      role="status"
-                                      aria-hidden="true"
-                                    />
-                                  ) : (
-                                    <Form.Control
-                                      type="number"
-                                      min="0"
-                                      value={tempValue}
-                                      autoFocus
-                                      onChange={(e) =>
-                                        setTempValue(e.target.value)
-                                      }
-                                      onKeyDown={handleKeyDown}
-                                      onBlur={handleBlur}
-                                    />
+                        return (
+                          <td
+                            key={month.key}
+                            className={
+                              isDisabled
+                                ? "disabled-cell"
+                                : getCellClass(
+                                    student.payments.real_payments[key],
+                                    student.payments.agreed_payments[
+                                      `${month.key}_agreed`
+                                    ]
                                   )
+                            }
+                            onClick={(e) => {
+                              if (isDisabled) return;
+                              e.stopPropagation();
+                              handleCellClick(
+                                student._id,
+                                key,
+                                student.payments.real_payments[key]
+                              );
+                            }}
+                          >
+                            {!isDisabled ? (
+                              editingCell.studentId === student._id &&
+                              editingCell.key === key ? (
+                                isSaving ? (
+                                  <Spinner
+                                    animation="border"
+                                    size="sm"
+                                    role="status"
+                                    aria-hidden="true"
+                                  />
                                 ) : (
-                                  displayValue(
-                                    student.payments.real_payments[key]
-                                  )
+                                  <Form.Control
+                                    type="number"
+                                    min="0"
+                                    value={tempValue}
+                                    autoFocus
+                                    onChange={(e) =>
+                                      setTempValue(e.target.value)
+                                    }
+                                    onKeyDown={handleKeyDown}
+                                    onBlur={handleBlur}
+                                  />
                                 )
                               ) : (
-                                ""
-                              )}
-                            </td>
-                          );
-                        })}
-                      </tr>
-                      {hasTransport && (
-                        <tr className="transport-row">
-                          {months.map((month) => {
-                            const joinedMonth = months.find(
-                              (m) => m.monthNum === student.joined_month
-                            );
-                            const joinedOrder = joinedMonth
-                              ? joinedMonth.order
-                              : null;
-
-                            const isDisabled =
-                              joinedOrder && month.order < joinedOrder;
-
-                            const key = `${month.key}_transport_real`;
-
-                            return (
-                              <td
-                                key={month.key}
-                                className={
-                                  isDisabled
-                                    ? "disabled-cell"
-                                    : getCellClass(
-                                        student.payments.real_payments[key],
-                                        student.payments.agreed_payments[
-                                          `${month.key}_transport_agreed`
-                                        ]
-                                      )
-                                }
-                                onClick={(e) => {
-                                  if (isDisabled) return;
-                                  e.stopPropagation();
-                                  handleCellClick(
-                                    student._id,
-                                    key,
-                                    student.payments.real_payments[key]
-                                  );
-                                }}
-                              >
-                                {!isDisabled ? (
-                                  editingCell.studentId === student._id &&
-                                  editingCell.key === key ? (
-                                    isSaving ? (
-                                      <Spinner
-                                        animation="border"
-                                        size="sm"
-                                        role="status"
-                                        aria-hidden="true"
-                                      />
-                                    ) : (
-                                      <Form.Control
-                                        type="number"
-                                        min="0"
-                                        value={tempValue}
-                                        autoFocus
-                                        onChange={(e) =>
-                                          setTempValue(e.target.value)
-                                        }
-                                        onKeyDown={handleKeyDown}
-                                        onBlur={handleBlur}
-                                      />
-                                    )
-                                  ) : (
-                                    displayValue(
-                                      student.payments.real_payments[key]
-                                    )
-                                  )
-                                ) : (
-                                  ""
-                                )}
-                              </td>
-                            );
-                          })}
-                        </tr>
-                      )}
-                    </React.Fragment>
+                                displayValue(
+                                  student.payments.real_payments[key]
+                                )
+                              )
+                            ) : (
+                              ""
+                            )}
+                          </td>
+                        );
+                      })}
+                    </tr>
                   );
                 })
               )}

@@ -170,7 +170,6 @@ function NormalPayments() {
                 <tr>
                   <th>{t("month")}</th>
                   <th>{t("monthly_agreed_payments")}</th>
-                  <th>{t("transport_agreed_payments")}</th>
                   <th>{t("total_expenses")}</th>
                   <th>{t("net_profit")}</th>
                 </tr>
@@ -181,9 +180,6 @@ function NormalPayments() {
                     <td>{monthNames[row.month] || row.month}</td>
                     <td>
                       {(row.total_monthly_agreed_payments || 0).toFixed(2)} DH
-                    </td>
-                    <td>
-                      {(row.total_transport_agreed_payments || 0).toFixed(2)} DH
                     </td>
                     <td>{(row.total_expenses || 0).toFixed(2)} DH</td>
                     <td>{(row.net_profit || 0).toFixed(2)} DH</td>
@@ -200,16 +196,12 @@ function NormalPayments() {
                     <strong>
                       {reportData
                         .reduce(
-                          (acc, row) =>
-                            acc + (row.total_transport_agreed_payments || 0),
+                          (acc, row) => acc + (row.total_expenses || 0),
                           0
                         )
                         .toFixed(2)}{" "}
                       DH
                     </strong>
-                  </td>
-                  <td>
-                    <strong>0.00 DH</strong>
                   </td>
                   <td>
                     <strong>
