@@ -42,6 +42,7 @@ function CreditReports() {
         const response = await axios.get(
           process.env.REACT_APP_BACKEND_URL + "/schoolyearperiods"
         );
+        // Adjust according to your backend response structure
         setSchoolYearPeriods(response.data.data);
       } catch (err) {
         console.error("Error fetching school year periods:", err);
@@ -54,6 +55,7 @@ function CreditReports() {
 
   // Fetch report data for all months of the selected school year period
   const fetchReport = async () => {
+    if (!selectedSchoolYear) return;
     setLoading(true);
     setError("");
     try {
@@ -61,7 +63,11 @@ function CreditReports() {
         process.env.REACT_APP_BACKEND_URL +
           `/creditreports/all_months_report?schoolyear_id=${selectedSchoolYear}`
       );
-      setReportData(response.data.data);
+      if (response.data.status === "success") {
+        setReportData(response.data.data);
+      } else {
+        setError(response.data.message || t("failed_to_fetch_report"));
+      }
       setLoading(false);
     } catch (err) {
       console.error("Error fetching report:", err);
@@ -74,7 +80,7 @@ function CreditReports() {
     setSelectedSchoolYear(e.target.value);
   };
 
-  // Handle the modal to show unpaid students for a specific month or payment category
+  // Handle the modal to show unpaid students for a specific month
   const handleShowModal = (title, students) => {
     setModalTitle(title);
     setModalStudents(students);
@@ -115,7 +121,10 @@ function CreditReports() {
         >
           <option value="">{t("select_school_year_period")}</option>
           {schoolYearPeriods.map((period) => (
-            <option key={period._id.$oid} value={period._id.$oid}>
+            <option
+              key={period._id.$oid || period._id}
+              value={period._id.$oid || period._id}
+            >
               {period.name}
             </option>
           ))}
@@ -139,7 +148,7 @@ function CreditReports() {
       )}
       {error && (
         <Alert className="alert-container" variant="danger">
-          {t("failed_to_fetch_report")}
+          {error}
         </Alert>
       )}
       {!loading && !error && reportData.length > 0 && (
@@ -148,7 +157,9 @@ function CreditReports() {
             {t("school_year_period_label")}{" "}
             {
               schoolYearPeriods.find(
-                (period) => period._id.$oid === selectedSchoolYear
+                (period) =>
+                  period._id.$oid === selectedSchoolYear ||
+                  period._id === selectedSchoolYear
               )?.name
             }
           </h2>
@@ -164,10 +175,6 @@ function CreditReports() {
                 <th className="highlight-column-7">
                   {t("current_net_profit")}
                 </th>
-                <th>{t("part_au_tant_que_associe")}</th>
-                <th className="highlight-column-9">
-                  {t("current_part_au_tant_que_associe")}
-                </th>
                 <th>{t("unpaid_students")}</th>
               </tr>
             </thead>
@@ -180,8 +187,6 @@ function CreditReports() {
                   depence,
                   net_profit,
                   current_net_profit,
-                  part_au_tant_que_associe,
-                  current_part_au_tant_que_associe,
                 } = row;
 
                 const total_payee_restant = total_paid + total_left;
@@ -197,17 +202,13 @@ function CreditReports() {
                     <td className="highlight-column-7">
                       {current_net_profit.toFixed(2)}
                     </td>
-                    <td>{part_au_tant_que_associe.toFixed(2)}</td>
-                    <td className="highlight-column-9">
-                      {current_part_au_tant_que_associe.toFixed(2)}
-                    </td>
                     <td>
                       {row.unpaid_students && row.unpaid_students.length > 0 ? (
                         <Button
                           variant="link"
                           onClick={() =>
                             handleShowModal(
-                              `${t("unpaid_students_title")}${
+                              `${t("unpaid_students_title")} ${
                                 monthNames[month]
                               }`,
                               row.unpaid_students
@@ -249,8 +250,6 @@ function CreditReports() {
                   <th>{t("name")}</th>
                   <th>{t("agreed_payment")}</th>
                   <th>{t("real_payment")}</th>
-                  <th>{t("agreed_transport")}</th>
-                  <th>{t("real_transport")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -259,8 +258,6 @@ function CreditReports() {
                     <td>{student.name}</td>
                     <td>{student.agreed_payment.toLocaleString()} DH</td>
                     <td>{student.real_payment.toLocaleString()} DH</td>
-                    <td>{student.agreed_transport.toLocaleString()} DH</td>
-                    <td>{student.real_transport.toLocaleString()} DH</td>
                   </tr>
                 ))}
               </tbody>

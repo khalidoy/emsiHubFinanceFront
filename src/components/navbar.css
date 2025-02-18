@@ -1,10 +1,11 @@
 /* Navbar customization */
 
 .custom-navbar {
-  background-color: #343a40;
-  padding-top: 5px !important;
-  padding-bottom: 5px !important;
-  min-height: 50px;
+  background-color: #a4cfab66;
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+  min-height: 120px;
+  /* Increased to accommodate larger logo */
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -15,20 +16,23 @@
 
 .app-title {
   font-size: 20px !important;
-  /* Adjust font size */
   color: white;
   display: flex;
   align-items: center;
-  /* Vertically center the brand text */
 }
 
-/* Brand icon customization */
+/* Logo styling */
 
-.brand-icon {
-  margin-right: 10px !important;
-  /* Add more space between logo and text */
-  font-size: 24px !important;
-  /* Adjust icon size */
+.navbar-logo {
+  height: 130px;
+  /* Increased logo size */
+  margin-right: 100px !important;
+  object-fit: contain;
+}
+
+/* Brand text styling */
+
+.brand-text {
   color: white;
 }
 
@@ -36,36 +40,34 @@
 
 .brand-subtext {
   margin-top: -5px;
-  /* Reduce the margin for closer alignment */
   font-size: 14px;
-  /* Make subtext smaller */
   color: #ffc107;
-  /* Retain the yellow color */
 }
 
 /* Menu items */
 
 .nav-item {
-  color: white !important;
+  color: rgb(58, 58, 58) !important;
   margin-left: 15px !important;
   font-size: 16px !important;
-  /* Adjust font size for better balance with the brand */
   display: flex;
   align-items: center;
-  /* Vertically center the items */
 }
 
-/* Fix the grey color of Expenses dropdown */
+/* Fix the grey color of dropdown toggle */
 
 .navbar .dropdown-toggle {
-  color: white !important;
-  /* Force white color for the dropdown menu */
+  color: rgb(0, 0, 0) !important;
+}
+
+.navbar .dropdown-toggle:hover {
+  color: #ffc107 !important;
 }
 
 /* Dropdown menu background color */
 
 #expenses-nav-dropdown .dropdown-menu {
-  background-color: #343a40 !important;
+  background-color: #3cb371 !important;
 }
 
 /* Dropdown items */
@@ -75,7 +77,7 @@
 }
 
 #expenses-nav-dropdown .dropdown-item:hover {
-  background-color: #495057 !important;
+  background-color: #2e8b57 !important;
   color: white !important;
 }
 
@@ -83,7 +85,6 @@
 
 .nav-item:hover {
   color: #ffc107 !important;
-  /* Add yellow hover effect */
 }
 
 /* Responsive styling */
@@ -91,6 +92,5 @@
 @media (max-width: 768px) {
   .nav-item {
     font-size: 14px !important;
-    /* Adjust font size for smaller screens */
   }
 }

@@ -8,8 +8,8 @@ import translationFR from "../locales/fr/translation.json";
 
 // Define the resources (translations) by language
 const resources = {
-  ar: { translation: translationAR },
   fr: { translation: translationFR },
+  ar: { translation: translationAR },
 };
 
 // Initialize i18n
@@ -17,8 +17,8 @@ i18n
   .use(initReactI18next) // Passes i18n instance to react-i18next
   .init({
     resources,
-    lng: "ar", // Set default language to Arabic (or 'fr' for French if preferred)
-    fallbackLng: "fr", // Fallback language if translation not found
+    lng: "fr", // Set default language to Arabic (or 'fr' for French if preferred)
+    fallbackLng: "ar", // Fallback language if translation not found
     interpolation: {
       escapeValue: false, // React already escapes by default
     },

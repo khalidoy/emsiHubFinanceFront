@@ -8,7 +8,6 @@ const StudentStatistics = ({ left, newCount, unregistered, registered }) => {
 
   return (
     <div className="student-statistics mb-4">
-      <h5>{t("student_statistics")}</h5>
       <ul className="list-inline">
         <li className="list-inline-item">
           <span className="stat-label">{t("students_left")}</span> {left}

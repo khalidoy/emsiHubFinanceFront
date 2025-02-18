@@ -13,27 +13,20 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "react-i18next"; // Import useTranslation hook
 import "../components/navbar.css";
+import logo from "../logo.png"; // Import logo from ../logo.png
 
 function CustomNavbar() {
-  const { i18n, t } = useTranslation(); // Initialize i18n and t function
+  const { i18n, t } = useTranslation();
 
   const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng); // Function to change language
+    i18n.changeLanguage(lng);
   };
 
   return (
-    <Navbar expand="lg" className="custom-navbar" bg="dark" variant="dark">
+    <Navbar expand="lg" className="custom-navbar" variant="dark">
       <Container>
         <Navbar.Brand as={Link} to="/" className="app-title">
-          <span className="brand-icon">
-            <FontAwesomeIcon icon={faDollarSign} />
-          </span>
-          <span>Gsak Finance</span>
-          <div className="brand-subtext">
-            <div style={{ color: "yellow", fontSize: 12, margin: 5 }}>
-              by Khalid Yakhloufi
-            </div>
-          </div>
+          <img src={logo} alt="University Logo" className="navbar-logo" />
         </Navbar.Brand>
 
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -89,16 +82,18 @@ function CustomNavbar() {
               className="nav-item"
               menuVariant="dark"
             >
-              {/* <NavDropdown.Item as={Link} to="/reports/normal-payments">
-                {t("normal_payments")}
-              </NavDropdown.Item> */}
-
               <NavDropdown.Item as={Link} to="/reports/daily-acc-report">
                 {t("daily_accounting_report")}
               </NavDropdown.Item>
-              {/* Transport report removed */}
               <NavDropdown.Item as={Link} to="/payments-report">
                 {t("payments_report")}
+              </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/reports/normal-payments">
+                {t("normal_payments")}
+              </NavDropdown.Item>
+
+              <NavDropdown.Item as={Link} to="/reports/credit-report">
+                {t("credit_report")}
               </NavDropdown.Item>
             </NavDropdown>
 
@@ -106,10 +101,7 @@ function CustomNavbar() {
             <NavDropdown
               title={
                 <>
-                  <FontAwesomeIcon
-                    icon={faGlobe} // Add the globe icon
-                    style={{ marginRight: 8 }}
-                  />
+                  <FontAwesomeIcon icon={faGlobe} style={{ marginRight: 8 }} />
                   {t("language")}
                 </>
               }
